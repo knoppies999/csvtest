@@ -59,6 +59,8 @@
             csvRecord.Employee = curruntRecord[].trim();  //in the [] add mapping of employee in relation to line in csv, eg: if its the 3rd item index is 2
             csvRecord.Initiative = curruntRecord[].trim();  
             csvRecord.Time_period = curruntRecord[].trim(); 
+            csvRecord.Hours_allocated = curruntRecord[].trim(); 
+            csvRecord.percentageAllocated = curruntRecord[].trim(); 
             
 
             //we can consider pushing the whole array rather than trimming it here, just seperate and decide after
