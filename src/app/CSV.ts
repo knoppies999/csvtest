@@ -1,7 +1,8 @@
 export class CSVRecord {  
   
-        public firstName: any;  
-        public lastName: any;  
+        public Employee: any;  
+        public Initiative: any;  
+        public Time_period: any; 
 
         
            

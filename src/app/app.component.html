@@ -2,18 +2,19 @@
     <input type="file" #csvReader name="Upload CSV" id="txtFileUpload" (change)="uploadListener($event)" accept=".csv" />    
     <table class="" *ngIf="records.length > 0">    
       <thead>    
-        <tr>    
+            
 
-          <th>FirstName </th>    
-          <th>LastName </th>    
-
-        </tr>    
+          
+         
+        
       </thead>    
       <tbody>    
         <tr *ngFor="let record of records;let i = index;">    
 
-          <td> <span>{{record.firstName}}</span> </td>    
-          <td> <span>{{record.lastName}}</span> </td>    
+          <td> <span>{{record.Employee}}</span> </td>    
+          <td> <span>{{record.Initiative}}</span> </td> 
+          <td> <span>{{record.Time_period}}</span> </td>    
+          
 
         </tr>    
       </tbody>    

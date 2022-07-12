@@ -13,6 +13,7 @@
       title = 'test';  
       
       public records: any[] = [];  
+      public recordCount =0;
       @ViewChild('csvReader') csvReader: any;  
       
       uploadListener($event: any): void {  
@@ -30,7 +31,7 @@
             let csvData = reader.result;  
             let csvRecordsArray = (<string>csvData).split(/\r\n|\n/);  //the whole csv file in text form split by operator
             
-            let headersRow = this.getHeaderArray(csvRecordsArray);  
+             let headersRow = this.getHeaderArray(csvRecordsArray);  
       
             this.records = this.getDataRecordsArrayFromCSVFile(csvRecordsArray, headersRow.length);  
           };  
@@ -52,10 +53,12 @@
           let curruntRecord = (<string>csvRecordsArray[i]).split(',');  //this array contains a line of a csv file 
           if (curruntRecord.length == headerLength) {   
             let csvRecord: CSVRecord = new CSVRecord();  
+            
+              //we just need them to map which is which, eg: if employee = position 3 in csv then we plug it in 
               
-            csvRecord.firstName = curruntRecord[0].trim();  
-            csvRecord.lastName = curruntRecord[1].trim();  
-
+            csvRecord.Employee = curruntRecord[].trim();  //in the [] add mapping of employee in relation to line in csv, eg: if its the 3rd item index is 2
+            csvRecord.Initiative = curruntRecord[].trim();  
+            csvRecord.Time_period = curruntRecord[].trim(); 
             
 
             //we can consider pushing the whole array rather than trimming it here, just seperate and decide after
@@ -76,14 +79,15 @@
         return file.name.endsWith(".csv");  
       }  
       
-      getHeaderArray(csvRecordsArr: any) {  
-        let headers = (<string>csvRecordsArr[0]).split(',');  
-        let headerArray = [];  
-        for (let j = 0; j < headers.length; j++) {  
-          headerArray.push(headers[j]);  
-        }  
-        return headerArray;  
-      }  
+       getHeaderArray(csvRecordsArr: any) {  
+         let headers = (<string>csvRecordsArr[0]).split(',');  
+         let headerArray = [];  
+         for (let j = 0; j < headers.length; j++) {  
+           this.recordCount++;
+           headerArray.push(headers[j]);  
+         }  
+         return headerArray;  
+       }  
       
       fileReset() {  
         this.csvReader.nativeElement.value = "";  
