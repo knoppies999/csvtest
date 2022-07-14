@@ -1,22 +1,44 @@
 
     <input type="file" #csvReader name="Upload CSV" id="txtFileUpload" (change)="uploadListener($event)" accept=".csv" />    
-    <table class="" *ngIf="records.length > 0">    
+   <table class="" *ngIf="recordCount > 0">     
       <thead>    
+        
+          <th *ngFor="let a of createRange(recordCount); let i = index">
+              
+              
+                <select #type (change)="onSelected(type.value, i)">
+                <option selected="selected" value="0">None</option>
+                <option value="1">Employee</option>
+                <option value="2">Initiatives</option>
+                <option value="3">Time period</option>
+                <option value="4">Hours allocated</option>
+                <option value="5">Percentage allocated</option>
+                
+              </select>
             
+              
 
+
+            </th>
+        
           
-         
+            <div class="button-row">
+              <button (click) = "verifyUpload()" mat-raised-button>Upload</button>
+            </div>
         
       </thead>    
       <tbody>    
-        <tr *ngFor="let record of records;let i = index;">    
+        <tr *ngFor="let b of createRange(1);let i = index;">    
 
-          <td> <span>{{record.Employee}}</span> </td>    
-          <td> <span>{{record.Initiative}}</span> </td> 
-          <td> <span>{{record.Time_period}}</span> </td>   
-          <td> <span>{{record.Hours_allocated}}</span> </td>   
-          <td> <span>{{record.percentageAllocated}}</span> </td>    
+          <th *ngFor="let a of createRange(recordCount); let i = index;">
+            <span>{{currRecord[i]}}</span>
+            
+            
+          </th>
+
+        
 
         </tr>    
       </tbody>    
-    </table>      
+     </table>  
+     

@@ -1,6 +1,8 @@
 
 
-    import { Component, ViewChild } from '@angular/core';  
+    import { analyzeAndValidateNgModules } from '@angular/compiler';
+import { Component, ViewChild } from '@angular/core';  
+import { TestBed } from '@angular/core/testing';
     import { CSVRecord } from './CSV';  
       
     @Component({  
@@ -11,9 +13,21 @@
       
     export class AppComponent {  
       title = 'test';  
-      
+
       public records: any[] = [];  
-      public recordCount =0;
+      public recordCount = 0;
+      public currRecord: any[] = [];
+      public currentArray = [];
+      public selected: any[] = [];
+      
+        private Postion1 = 0;
+        private Postion2 = 0;
+        private Postion3 = 0;
+        private Postion4 = 0;
+        private Postion5 = 0;
+        
+      private csvFile: any[] = [];
+        
       @ViewChild('csvReader') csvReader: any;  
       
       uploadListener($event: any): void {  
@@ -21,7 +35,7 @@
         let text = [];  
         let files = $event.srcElement.files;  
       
-        if (this.isValidCSVFile(files[0])) {  //can use multiple files if you use a for loop here I think?
+        if (this.isValidCSVFile(files[0])) {  
       
           let input = $event.target;  
           let reader = new FileReader();  
@@ -30,10 +44,11 @@
           reader.onload = () => {  
             let csvData = reader.result;  
             let csvRecordsArray = (<string>csvData).split(/\r\n|\n/);  //the whole csv file in text form split by operator
-            
+            this.csvFile = csvRecordsArray;
              let headersRow = this.getHeaderArray(csvRecordsArray);  
-      
-            this.records = this.getDataRecordsArrayFromCSVFile(csvRecordsArray, headersRow.length);  
+             let currentRecord = this.getcurrentArray(csvRecordsArray);
+
+         
           };  
       
           reader.onerror = function () {  
@@ -45,37 +60,44 @@
           this.fileReset();  
         }  
       }  
-      
-      getDataRecordsArrayFromCSVFile(csvRecordsArray: any, headerLength: any) {  
-        let csvArr = [];  
-      
-        for (let i = 0; i < csvRecordsArray.length; i++) {  //will iterate through the entire csv file
-          let curruntRecord = (<string>csvRecordsArray[i]).split(',');  //this array contains a line of a csv file 
-          if (curruntRecord.length == headerLength) {   
-            let csvRecord: CSVRecord = new CSVRecord();  
-            
-              //we just need them to map which is which, eg: if employee = position 3 in csv then we plug it in 
-              
-            csvRecord.Employee = curruntRecord[].trim();  //in the [] add mapping of employee in relation to line in csv, eg: if its the 3rd item index is 2
-            csvRecord.Initiative = curruntRecord[].trim();  
-            csvRecord.Time_period = curruntRecord[].trim(); 
-            csvRecord.Hours_allocated = curruntRecord[].trim(); 
-            csvRecord.percentageAllocated = curruntRecord[].trim(); 
-            
 
-            //we can consider pushing the whole array rather than trimming it here, just seperate and decide after
-            //we can have an array which checks headers of csv, eg : name surname dob gender etc
-            //send 2 things to c# backend, Header + raw array
-            //Proccess array allowing you to get only data you want eg: If header == "Name"
-            //  {find names position in its array, then iterate through csv finding all names (they will have the same position as the header)}
-            // do data handling, eg if name in db etc
-            //can do data handling on frontend the same way all except for database querys 
-            
-            csvArr.push(csvRecord);  
-          }  
+      currentRecord(i : any)
+      {
+       let f = this.currRecord[i];
+       f = 5;
+        return f;
+      }
+
+
+      getarr(i : any)
+      {
+
+      }
+      getcurrentArray(csvRecordsArr: any) {
+        let currentArray = [];  
+       
+          let headers = (<string>csvRecordsArr[1]).split(',');  
+          
+        
+         
+
+        for (let j = 0; j < headers.length; j++) {  
+          
+          currentArray.push(headers[j]);  
+          this.currRecord[j] = headers[j];
         }  
-        return csvArr;  
+          
+        
+        
+        return currentArray;  
       }  
+      createRange(number: any) 
+      { 
+        
+        return new Array(number); 
+      
+      }
+
       
       isValidCSVFile(file: any) {  
         return file.name.endsWith(".csv");  
@@ -95,5 +117,104 @@
         this.csvReader.nativeElement.value = "";  
         this.records = [];  
       }  
+      
+      onSelected(value:string, i:any): void
+      {
+        
+        this.selected[i] = value;
+        
+      }
+      
+    verifyUpload()
+    {
+        
+        let duplicate1 = 0; //employee
+        let duplicate2 = 0; //Inititives
+        let duplicate3 = 0; //TimePeriod
+        let duplicate4 = 0; //Hours allocated
+        let duplicate5 = 0; //Percentage allocated
+
+        
+
+      for (let index = 0; index < this.recordCount; index++) {
+        
+        if (this.selected[index] == 1) {
+          duplicate1++;
+          this.Postion1 = index;
+        }
+        if (this.selected[index] == 2) {
+          duplicate2 ++;
+          this.Postion2 = index;
+        }
+        if (this.selected[index] == 3) {
+          duplicate3 ++;
+          this.Postion3 = index;
+        }
+        if (this.selected[index] == 4) {
+          duplicate4 ++;
+          this.Postion4 = index;
+        }
+        if (this.selected[index] == 5) {
+          duplicate5 ++;
+          this.Postion5 = index;
+        }
+
+        
+        
+      }
+
+      if (duplicate1 == 1 && duplicate2 == 1 && duplicate3 == 1 && duplicate4 == 1 && duplicate5 == 1) {
+        
+         this.Map(this.csvFile, this.recordCount); 
+      }
+      else
+      {
+        //add error message here, there are dupicates or not all the fields have been mapped
+        if (duplicate1 > 1 || duplicate2 > 1 || duplicate3 > 1 ||duplicate4 > 1 ||duplicate5 > 1) {
+          return null;
+            //add error message here, there are dupicates
+        }
+        else
+        {
+          return null;
+          //add error message here, not all the fields have been mapped
+        }
+      }
+      
+      return null;
+    }
+
+    Map(csvRecordsArray: any, headerLength: any) :void
+    {
+     
+      let csvArr = [];  
+        for (let i = 0; i < csvRecordsArray.length; i++) {  
+          let curruntRecord = (<string>csvRecordsArray[i]).split(',');  
+         
+           if (curruntRecord.length == headerLength) {   
+             let csvRecord: CSVRecord = new CSVRecord();  
+            
+         
+              
+             csvRecord.Employee = curruntRecord[this.Postion1].trim();  
+             csvRecord.Initiative = curruntRecord[this.Postion2].trim();  
+             csvRecord.Time_period = curruntRecord[this.Postion3].trim(); 
+             csvRecord.Hours_allocated = curruntRecord[this.Postion4].trim(); 
+             csvRecord.percentageAllocated = curruntRecord[this.Postion5].trim(); 
+            
+
+            
+             
+             console.log(csvRecord);
+             
+            
+        }  
+        
+      }  
+       
+    }
+
     }  
+
+    
 
